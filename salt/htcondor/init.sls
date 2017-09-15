@@ -1,5 +1,5 @@
 
-/etc/yum/repos.d/htcondor-stable-rhel7.repo:
+/etc/yum.repos.d/htcondor-stable-rhel7.repo:
   file:
     - managed
     - source: salt://htcondor/htcondor-stable-rhel7.repo
@@ -10,7 +10,7 @@ condor:
   service.running:
     - enable: True
     - watch:
-      - /etc/condor/config.d/10-jetstream.conf
+      - file: /etc/condor/config.d/10-jetstream.conf
 
 
 #/etc/condor/pool_password:
@@ -26,7 +26,6 @@ condor:
 ##
 ## worker configs
 ##
-
 /etc/condor/config.d/10-jetstream.conf:
   file:
     - managed
@@ -48,7 +47,6 @@ condor:
 ##
 ## master configs
 ##
-
 /etc/condor/config.d/10-jetstream.conf:
   file:
     - managed
