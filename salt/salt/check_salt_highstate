@@ -1,0 +1,84 @@
+#!/usr/bin/python
+
+import optparse
+import sys
+import time
+import os
+import re
+
+UNKNOWN  = 3
+CRITICAL = 2
+WARN     = 1
+OK       = 0
+
+issues = []
+
+def reg_issue(level, msg):
+    issues.append([level, msg])
+
+def report():
+
+    high_level = 0
+    for level in [UNKNOWN, CRITICAL, WARN, OK]:
+        for issue in issues:
+            if issue[0] == level:
+                print(issue[1])
+                if level > high_level:
+                    high_level = level
+    sys.exit(high_level)
+
+
+def check():
+    """
+    The tests to perform in the given order. Check at logically places
+    if we should short-circuit the testing.
+    """
+
+    log_file = "/var/log/salt-highstate.log"
+
+    # stat the file to make sure it is not too old
+    if not os.path.isfile(log_file):
+        reg_issue(CRITICAL, "Log file is missing")
+        report()
+    mtime = os.stat(log_file).st_mtime
+    if mtime < time.time() - 1800:
+        reg_issue(WARN, "Log file is stale")
+        report()
+   
+    succeeded = -1
+    failed = -1
+    summary_section = False
+    f = open(log_file, "r")
+    for line in f:
+        # skip most of the file
+        if re.match("^Summary", line):
+            summary_section = True
+        if summary_section:
+            if re.match("^Succeeded:", line):
+                succeeded = re.sub("^Succeeded: *", "", line)
+                succeeded = re.sub(" \(.*", "", succeeded)
+                succeeded = int(succeeded)
+            if re.match("^Failed:", line):
+                failed = int(re.sub("^Failed: *", "", line))
+    f.close()
+
+    if succeeded < 0 or failed < 0:
+        reg_issue(CRITICAL, "Unable to parse log file")
+        report()
+    if succeeded == 0:
+        reg_issue(WARN, "No rules succeeded")
+        report()
+    if failed > 0:
+        reg_issue(WARN, "%d rules failed" %(failed))
+        report()
+
+    reg_issue(OK, "%d rules ok" %(succeeded))
+    report()
+
+
+# Configure command line option parser
+parser = optparse.OptionParser()
+(options, args) = parser.parse_args()
+
+check()
+

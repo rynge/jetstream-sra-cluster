@@ -1,0 +1,13 @@
+[Unit]
+Description=Ganglia Monitoring Daemon
+After=multi-user.target
+
+[Service]
+Type=forking
+ExecStartPre=/bin/sleep 60
+ExecStart=/usr/sbin/gmond 
+
+[Install]
+WantedBy=multi-user.target
+
+

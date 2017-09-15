@@ -1,0 +1,7 @@
+
+MAILTO=rynge@isi.edu
+SHELL=/bin/bash
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+
+ 7,27,47 *  * * *  root sleep $(expr $RANDOM \% 180); timeout 1h salt-call state.highstate >/var/log/salt-highstate.log.running 2>&1; mv /var/log/salt-highstate.log.running /var/log/salt-highstate.log
+

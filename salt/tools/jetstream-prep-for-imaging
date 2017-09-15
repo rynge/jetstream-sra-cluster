@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# update to lastest salt state
+salt-call state.highstate
+
+# disable auto-shutdown
+mv /etc/condor/master_shutdown_script.sh /etc/condor/master_shutdown_script.sh.disabled
+
+systemctl stop condor
+systemctl stop autofs
+
+# enable auto-shutdown
+mv /etc/condor/master_shutdown_script.sh.disabled /etc/condor/master_shutdown_script.sh
+
+# cleanup
+rm -rf /var/log/condor/*
+rm -rf /var/lib/cvmfs/*
+
+#find /var/log -type f -mmin +10 -exec rm -f {} \;
+find /var/log -type f -exec rm -f {} \;
+
