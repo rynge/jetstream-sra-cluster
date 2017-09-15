@@ -23,10 +23,11 @@ count_running = 0
 print("Checking on VMs in the system ... ")
 for server in cloud.list_servers():
 
-    if server.name == "master":
+    # needed for mixed environments
+    if not re.match("^sra-", server.name):
         continue
-
-    if not re.match("compute-", server.name):
+    
+    if not re.match("^sra-worker", server.name):
         continue
     
     print(" ... %s (%s)" %(server.name, server.status))
@@ -41,12 +42,12 @@ for server in cloud.list_servers():
 
 
 # do we need more workers?
-if count_running < 2:
+if count_running < 1:
 
     image_selected = None
     for i in cloud.list_images():
         
-        if not re.match("ce-worker", i.name):
+        if not re.match("^sra-base-", i.name):
             continue
 
         if image_selected is None or \
@@ -57,12 +58,12 @@ if count_running < 2:
     
     flavor = cloud.get_flavor("m1.small")
 
-    network = cloud.get_network("ce-network")
+    network = cloud.get_network("sra-network")
 
     #secgroup = nova.security_groups.find(name="default")
 
     dt = datetime.datetime.now()
-    name = "compute-%s" %(dt.strftime("%Y%m%d%H%M%S"))
+    name = "sra-worker-%s" %(dt.strftime("%Y%m%d%H%M%S"))
 
     print("Starting a new instance with name %s" %(name))
     cloud.create_server(name, \

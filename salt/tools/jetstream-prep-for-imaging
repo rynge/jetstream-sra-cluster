@@ -13,8 +13,12 @@ systemctl stop autofs
 mv /etc/condor/master_shutdown_script.sh.disabled /etc/condor/master_shutdown_script.sh
 
 # cleanup
+rm -rf /root/.config/openstack
+rm -f /etc/condor/pool_password
+rm -f /etc/salt/pki/minion/minion*
+rm -f /etc/salt/pki/master/minions/*
+rm -f /etc/salt/minion.d/50-master.conf
 rm -rf /var/log/condor/*
-rm -rf /var/lib/cvmfs/*
 
 #find /var/log -type f -mmin +10 -exec rm -f {} \;
 find /var/log -type f -exec rm -f {} \;
