@@ -18,6 +18,7 @@ rm -f /etc/condor/pool_password
 rm -f /etc/salt/pki/minion/minion*
 rm -f /etc/salt/pki/master/minions/*
 rm -f /etc/salt/minion.d/50-master.conf
+rm -f /srv/jetstream-sra-cluster/salt/local-conf/*
 rm -rf /var/log/condor/*
 
 #find /var/log -type f -mmin +10 -exec rm -f {} \;

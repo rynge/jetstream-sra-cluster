@@ -4,6 +4,7 @@ import time
 import re
 import shade
 import datetime
+import subprocess
 
 from pprint import pprint
 
@@ -65,11 +66,21 @@ if count_running < 1:
     dt = datetime.datetime.now()
     name = "sra-worker-%s" %(dt.strftime("%Y%m%d%H%M%S"))
 
+    # create the user data script
+    cmd = "/srv/jetstream-sra-cluster/salt/tools/sra-create-worker-bootstrap" + \
+          " /tmp/" + name + " " + name + ".openstacklocal"
+    print(subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE).communicate()[0])
+
+    f = open("/tmp/" + name, "r")
+    user_data = f.read()
+    f.close()
+
     print("Starting a new instance with name %s" %(name))
     cloud.create_server(name, \
                         image=image_selected, \
                         flavor=flavor, \
                         network=network, \
-                        auto_ip=False)
+                        auto_ip=False, \
+                        userdata=user_data)
 
 

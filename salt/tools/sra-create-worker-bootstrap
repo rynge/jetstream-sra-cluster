@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# Creates an .sh script to bootstrap a worker node
+# This is passed as user data
+
+set -e
+
+SCRIPT=$1
+WORKER_HOSTNAME=$2
+
+if [ "x$SCRIPT" = "x" -o "x$WORKER_HOSTNAME" = "x" ]; then
+    echo "Usage: sra-create-worker-bootstrap [script_file_name] [worker_hostname]"
+    exit 1
+fi
+
+MASTER_HOSTNAME=`hostname -f`
+
+umask 0077
+
+cd /tmp
+
+salt-key --gen-keys=$WORKER_HOSTNAME
+cp $WORKER_HOSTNAME.pub /etc/salt/pki/master/minions/$WORKER_HOSTNAME
+chmod 644 /etc/salt/pki/master/minions/$WORKER_HOSTNAME
+
+cat >$SCRIPT <<EOF
+#!/bin/bash
+
+echo "master: $MASTER_HOSTNAME" >/etc/salt/minion.d/50-master.conf
+
+cat >/etc/salt/pki/minion/minion.pub <<EEOOFF
+EOF
+cat $WORKER_HOSTNAME.pub >>$SCRIPT
+cat >>$SCRIPT <<EOF
+EEOOFF
+
+cat >/etc/salt/pki/minion/minion.pem <<EEOOFF
+EOF
+cat $WORKER_HOSTNAME.pem >>$SCRIPT
+cat >>$SCRIPT <<EOF
+EEOOFF
+
+chmod 600 /etc/salt/pki/minion/minion.pem
+
+salt-call state.highstate || true
+salt-call state.highstate || true
+EOF
+
+# cleanup
+rm -f $WORKER_HOSTNAME.pub $WORKER_HOSTNAME.pem
+
