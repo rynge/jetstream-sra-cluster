@@ -20,6 +20,14 @@ salt-minion:
     - template: jinja
     - source: salt://salt/50-custom.conf
 
+/etc/salt/minion.d/50-master.conf:
+  file.managed:
+    - user: root
+    - group: root
+    - mode: 644
+    - template: jinja
+    - source: salt://local-conf/salt-50-master.conf
+
 /etc/cron.d/salt:
   file.managed:
     - source: salt://salt/cron.salt

@@ -5,7 +5,7 @@ set -e
 # install and configure salt
 yum install -y salt-master salt-minion
 mkdir -p /etc/salt/minion.d /etc/salt/master.d
-echo "master: "`hostname -f` >/srv/jetstream-sra-cluster/salt/salt/master.conf
+echo "master: "`hostname -f` >/srv/jetstream-sra-cluster/salt/local-conf/salt-50-master.conf
 cp /srv/jetstream-sra-cluster/salt/salt/*.conf /etc/salt/minion.d/
 systemctl restart salt-master
 systemctl enable salt-master
@@ -18,7 +18,7 @@ salt-call state.highstate
 
 # once HTCondor is installed, create a pool password and where to find the master
 condor_store_cred -p `uuidgen` -f /srv/jetstream-sra-cluster/salt/local-conf/htcondor-pool_password
-echo "CONDOR_HOST = $HOSTNAME" >/srv/jetstream-sra-cluster/salt/local-conf/htcondor-50-master.conf
+echo "CONDOR_HOST = $HOSTNAME" >/srv/jetstream-sra-cluster/salt/local-conf/htcondor-50-manager.conf
 
 salt-call state.highstate
 

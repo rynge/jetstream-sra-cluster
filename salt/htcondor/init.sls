@@ -11,14 +11,23 @@ condor:
     - enable: True
     - watch:
       - file: /etc/condor/config.d/10-jetstream.conf
+      - file: /etc/condor/config.d/50-manager.conf
+      - file: /etc/condor/pool_password
 
 
-#/etc/condor/pool_password:
-#  file:
-#    - managed
-#    - user: root
-#    - mode: 600
-#    - source: salt://htcondor/default/pool_password
+/etc/condor/config.d/50-manager.conf:
+  file:
+    - managed
+    - user: root
+    - mode: 644
+    - source: salt://local-conf/htcondor-50-manager.conf
+
+/etc/condor/pool_password:
+  file:
+    - managed
+    - user: root
+    - mode: 600
+    - source: salt://local-conf/htcondor-pool_password
 
 
 {% if 'worker_node' in salt['grains.get']('roles', []) %}
