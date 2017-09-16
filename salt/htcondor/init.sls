@@ -29,6 +29,11 @@ condor:
     - mode: 600
     - source: salt://local-conf/htcondor-pool_password
 
+/usr/lib/systemd/system/condor.service:
+  file:
+    - managed
+    - source: salt://htcondor/worker.condor.service
+
 
 {% if 'worker_node' in salt['grains.get']('roles', []) %}
 #######################################################################
@@ -45,11 +50,6 @@ condor:
     - managed
     - mode: 755
     - source: salt://htcondor/master_shutdown_script.sh
-
-/usr/lib/systemd/system/condor.service:
-  file:
-    - managed
-    - source: salt://htcondor/worker.condor.service
 
 {% else %}
 #######################################################################

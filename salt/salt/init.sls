@@ -1,4 +1,13 @@
 
+/usr/lib/systemd/system/salt-on-boot.service:
+  file:
+    - managed
+    - source: salt://salt/salt-on-boot.service
+
+salt-on-boot:
+  service:
+    - enabled
+
 salt-minion:
   service.running:
     - enable: True

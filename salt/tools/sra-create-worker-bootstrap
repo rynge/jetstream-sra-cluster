@@ -7,8 +7,9 @@ set -e
 
 SCRIPT=$1
 WORKER_HOSTNAME=$2
+WORKER_ALT_HOSTNAME=$3
 
-if [ "x$SCRIPT" = "x" -o "x$WORKER_HOSTNAME" = "x" ]; then
+if [ "x$SCRIPT" = "x" -o "x$WORKER_HOSTNAME" = "x" -o "x$WORKER_ALT_HOSTNAME" = "x" ]; then
     echo "Usage: sra-create-worker-bootstrap [script_file_name] [worker_hostname]"
     exit 1
 fi
@@ -19,13 +20,19 @@ umask 0077
 
 cd /tmp
 
+# create keys for the worker and pre-auth them in Salt
 salt-key --gen-keys=$WORKER_HOSTNAME
 cp $WORKER_HOSTNAME.pub /etc/salt/pki/master/minions/$WORKER_HOSTNAME
+#cp $WORKER_HOSTNAME.pub /etc/salt/pki/master/minions/$WORKER_ALT_HOSTNAME
 chmod 644 /etc/salt/pki/master/minions/$WORKER_HOSTNAME
 
 cat >$SCRIPT <<EOF
 #!/bin/bash
 
+cat >/etc/salt/grains <<EEOOFF
+roles:
+  - worker_node
+EEOOFF
 echo "master: $MASTER_HOSTNAME" >/etc/salt/minion.d/50-master.conf
 
 cat >/etc/salt/pki/minion/minion.pub <<EEOOFF
@@ -42,8 +49,11 @@ EEOOFF
 
 chmod 600 /etc/salt/pki/minion/minion.pem
 
-salt-call state.highstate || true
-salt-call state.highstate || true
+# seems we can get stuck here if we try to access the network
+#systemctl stop salt-master || true
+#salt-call state.highstate || true
+#systemctl restart salt-minion || true
+
 EOF
 
 # cleanup

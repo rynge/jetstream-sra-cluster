@@ -4,17 +4,14 @@
 salt-call state.highstate
 
 # disable auto-shutdown
-mv /etc/condor/master_shutdown_script.sh /etc/condor/master_shutdown_script.sh.disabled
+rm -f /etc/condor/master_shutdown_script.sh
 
 systemctl stop condor
-systemctl stop autofs
-
-# enable auto-shutdown
-mv /etc/condor/master_shutdown_script.sh.disabled /etc/condor/master_shutdown_script.sh
 
 # cleanup
 rm -rf /root/.config/openstack
 rm -f /etc/condor/pool_password
+rm -f /etc/salt/grains
 rm -f /etc/salt/pki/minion/minion*
 rm -f /etc/salt/pki/master/minions/*
 rm -f /etc/salt/minion.d/50-master.conf

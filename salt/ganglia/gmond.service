@@ -4,7 +4,7 @@ After=multi-user.target
 
 [Service]
 Type=forking
-ExecStartPre=/bin/sleep 60
+ExecStartPre=/bin/sleep 30
 ExecStart=/usr/sbin/gmond 
 
 [Install]

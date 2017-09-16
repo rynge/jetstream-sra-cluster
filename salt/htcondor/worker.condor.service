@@ -6,7 +6,7 @@ Wants=network-online.target
 
 [Service]
 EnvironmentFile=-/etc/sysconfig/condor
-ExecStartPre=/bin/sleep 60
+ExecStartPre=/bin/sleep 30
 ExecStart=/usr/sbin/condor_master -f
 ExecStop=/usr/sbin/condor_off -master
 ExecReload=/bin/kill -HUP $MAINPID

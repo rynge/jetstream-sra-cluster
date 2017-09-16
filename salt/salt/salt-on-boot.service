@@ -1,0 +1,14 @@
+[Unit]
+Description=salt-on-boot.service
+After=cloud-final.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c "sleep 30s; /usr/bin/salt-call state.highstate"
+ExecReload=/bin/kill -HUP $MAINPID
+RemainAfterExit=no
+WorkingDirectory=/
+Environment=TERM=xterm
+
+[Install]
+WantedBy=multi-user.target
