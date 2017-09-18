@@ -1,10 +1,10 @@
 [Unit]
 Description=salt-on-boot.service
-After=cloud-final.target
+After=network.target cloud-final.target
 
 [Service]
 Type=oneshot
-ExecStart=/bin/bash -c "sleep 30s; /usr/bin/salt-call state.highstate"
+ExecStart=/bin/bash -c "sleep 60s; /usr/bin/salt-call state.highstate"
 ExecReload=/bin/kill -HUP $MAINPID
 RemainAfterExit=no
 WorkingDirectory=/

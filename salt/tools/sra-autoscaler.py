@@ -19,12 +19,8 @@ def backticks(cmd):
 # Initialize and turn on debug logging
 #shade.simple_logging(debug=True)
 
-# Initialize cloud
-# Cloud configs are read with os-client-config
+# Initialize cloud from ~/.config/openstack/clouds.yml
 cloud = shade.openstack_cloud(cloud='jetstream_iu')
-
-#flavor = cloud.get_flavor_by_ram(512)
-#pprint(flavor)
 
 servers_running = 0
 
@@ -92,8 +88,6 @@ for i in range(new_instances_count):
     flavor = cloud.get_flavor("m1.small")
 
     network = cloud.get_network("sra-network")
-
-    #secgroup = nova.security_groups.find(name="default")
 
     # sleep to make sure this is a unique ts
     time.sleep(2)
