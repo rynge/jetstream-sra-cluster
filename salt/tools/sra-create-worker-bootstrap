@@ -29,6 +29,11 @@ chmod 644 /etc/salt/pki/master/minions/$WORKER_HOSTNAME
 cat >$SCRIPT <<EOF
 #!/bin/bash
 
+# fix the hostname - Jetstream is very inconsistent here
+hostname "$WORKER_HOSTNAME"
+echo "$WORKER_HOSTNAME" >/etc/hostname
+cat "$WORKER_HOSTNAME" >/etc/salt/minion_id
+
 cat >/etc/salt/grains <<EEOOFF
 roles:
   - worker_node

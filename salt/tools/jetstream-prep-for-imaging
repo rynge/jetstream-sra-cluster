@@ -11,12 +11,14 @@ systemctl stop condor
 # cleanup
 rm -rf /root/.config/openstack
 rm -f /etc/condor/pool_password
+rm -f /etc/cron.d/sra-autoscaler
 rm -f /etc/salt/grains
 rm -f /etc/salt/pki/minion/minion*
 rm -f /etc/salt/pki/master/minions/*
 rm -f /etc/salt/minion.d/50-master.conf
 rm -f /srv/jetstream-sra-cluster/salt/local-conf/*
 rm -rf /var/log/condor/*
+rm -rf /var/lib/condor/spool/*
 
 #find /var/log -type f -mmin +10 -exec rm -f {} \;
 find /var/log -type f -exec rm -f {} \;

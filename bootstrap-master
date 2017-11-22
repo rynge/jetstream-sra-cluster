@@ -2,11 +2,20 @@
 
 set -e
 
-MY_HOSTNAME=`hostname -f`
+MY_HOSTNAME=$1
+
+if [ "x$MY_HOSTNAME" = "x" ]; then
+    echo "Please provide the master internal host name as arg1. Example: ./bootstrap-master master.jetstreamlocal"
+    exit 1
+fi
+
+rm -f /srv/salt
+ln -s /srv/jetstream-sra-cluster/salt /srv/salt
 
 # install and configure salt
 yum install -y salt-master salt-minion
 mkdir -p /etc/salt/minion.d /etc/salt/master.d
+echo "$MY_HOSTNAME" >/etc/salt/minion_id
 echo "master: $MY_HOSTNAME" >/srv/jetstream-sra-cluster/salt/local-conf/salt-50-master.conf
 cp /srv/jetstream-sra-cluster/salt/salt/*.conf /etc/salt/minion.d/
 cp /srv/jetstream-sra-cluster/salt/local-conf/salt-50-master.conf /etc/salt/minion.d/
@@ -26,5 +35,8 @@ echo "CONDOR_HOST = $MY_HOSTNAME" >/srv/jetstream-sra-cluster/salt/local-conf/ht
 salt-call state.highstate
 
 systemctl restart salt-minion
+
+# enable autoscaler
+echo " */5 * * * *  root  /srv/jetstream-sra-cluster/salt/tools/sra-autoscaler.py >/var/log/sra-autoscaler.log 2>&1" >/etc/cron.d/sra-autoscaler
 
 

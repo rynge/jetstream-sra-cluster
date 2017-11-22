@@ -87,7 +87,7 @@ for i in range(new_instances_count):
     
     flavor = cloud.get_flavor("m1.small")
 
-    network = cloud.get_network("sra-network")
+    network = cloud.get_network("sra-net")
 
     # sleep to make sure this is a unique ts
     time.sleep(2)
@@ -99,7 +99,7 @@ for i in range(new_instances_count):
     # sometimes we get .novalocal and sometimes .openstacklocal hostnames
     cmd = "/srv/jetstream-sra-cluster/salt/tools/sra-create-worker-bootstrap" + \
           " /tmp/" + name + \
-          " " + name + ".novalocal" + \
+          " " + name + ".jetstreamlocal" + \
           " " + name + ".openstacklocal" 
     backticks(cmd)
 
