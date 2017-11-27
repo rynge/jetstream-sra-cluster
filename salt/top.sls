@@ -8,6 +8,7 @@ base:
     - autofs
     - htcondor
     - tools
+    - wrangler-fix
     
 #- ganglia
 
