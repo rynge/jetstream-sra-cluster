@@ -87,7 +87,9 @@ for i in range(new_instances_count):
     
     flavor = cloud.get_flavor("m1.small")
 
-    network = cloud.get_network("sra-net")
+    network = []
+    network.append(cloud.get_network("sra-net"))
+    network.append(cloud.get_network("sra-wrangler"))
 
     # sleep to make sure this is a unique ts
     time.sleep(2)
