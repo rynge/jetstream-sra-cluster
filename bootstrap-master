@@ -32,6 +32,22 @@ salt-call state.highstate
 condor_store_cred -p `uuidgen` -f /srv/jetstream-sra-cluster/salt/local-conf/htcondor-pool_password
 echo "CONDOR_HOST = $MY_HOSTNAME" >/srv/jetstream-sra-cluster/salt/local-conf/htcondor-50-manager.conf
 
+# munge key required for slurm
+dd if=/dev/urandom bs=1 count=1024 >/srv/jetstream-sra-cluster/salt/local-conf/munge.key
+
+# install slurm
+yum install -y munge-devel readline-devel pam-devel mariadb mariadb-server mariadb-devel
+rm -f /root/rpmbuild/RPMS/x86_64/slurm*.rpm
+cd /tmp	
+rm -rf slurm*.bz2 slurm*.rpm
+wget -nv https://download.schedmd.com/slurm/slurm-17.11.1.tar.bz2
+rpmbuild -ta slurm*.tar.bz2
+cd /root/rpmbuild/RPMS/x86_64/
+rm -f *openlava* *torque*
+rpm -Uvh slurm*.rpm
+systemctl restart mariadb
+echo "grant all on slurm.* to slurm@localhost identified by 'srasecret';" | mysql
+
 salt-call state.highstate
 
 systemctl restart salt-minion

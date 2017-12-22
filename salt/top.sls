@@ -7,8 +7,8 @@ base:
     - yum
     - autofs
     - htcondor
+    - slurm
     - tools
-    - wrangler-fix
     
 #- ganglia
 

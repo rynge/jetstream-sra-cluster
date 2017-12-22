@@ -4,4 +4,5 @@ salt/local-conf/htcondor-50-master.conf
 salt/local-conf/htcondor-pool_password
 salt/local-conf/master.conf
 salt/local-conf/salt-50-master.conf
+salt/local-conf/munge.key
 

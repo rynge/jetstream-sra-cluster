@@ -18,6 +18,8 @@ pigz:
 rsync:
   pkg.installed
 
+mariadb:
+  pkg.installed
 
 # development
 
