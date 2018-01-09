@@ -44,5 +44,8 @@ libtool:
 pkgconfig:
     pkg.installed
 
-
+# conflicts with our dhcpd setup - disable the service
+#NetworkManager:
+#    pkg.removed
+    
 
