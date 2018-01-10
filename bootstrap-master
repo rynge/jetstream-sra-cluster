@@ -9,8 +9,14 @@ if [ "x$MY_HOSTNAME" = "x" ]; then
     exit 1
 fi
 
+MY_SHORT_HOSTNAME=`echo $MY_HOSTNAME | sed 's/\..*//'`
+
 rm -f /srv/salt
 ln -s /srv/jetstream-sra-cluster/salt /srv/salt
+
+# generate a new hosts file
+./salt/tools/generate-hosts-file $MY_HOSTNAME $MY_SHORT_HOSTNAME >salt/local-conf/hosts
+cp salt/local-conf/hosts /etc/hosts
 
 # install and configure salt
 yum install -y salt-master salt-minion
@@ -37,6 +43,8 @@ dd if=/dev/urandom bs=1 count=1024 >/srv/jetstream-sra-cluster/salt/local-conf/m
 
 # install slurm
 yum install -y munge-devel readline-devel pam-devel mariadb mariadb-server mariadb-devel
+systemctl start mariadb
+systemctl enable mariadb
 rm -f /root/rpmbuild/RPMS/x86_64/slurm*.rpm
 cd /tmp	
 rm -rf slurm*.bz2 slurm*.rpm

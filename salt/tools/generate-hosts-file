@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+
+import socket
+import sys
+
+def getNetworkIp():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(('169.254.169.254', 0))
+    return s.getsockname()[0]
+
+# standard stuff
+print("127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4")
+print("::1         localhost localhost.localdomain localhost6 localhost6.localdomain6")
+
+my_ip = getNetworkIp()
+
+for third in range(256):
+    for forth in range(256):
+        ip = "192.168." + str(third) + "." + str(forth)
+        hname = "worker-192-168-" + str(third) + "-" + str(forth)
+        if ip == my_ip:
+            print(ip + " " + sys.argv[1] + " " + sys.argv[2])
+        #else:
+        #    print(ip + " " + hname + ".jetstreamlocal " + hname)
+

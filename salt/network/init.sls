@@ -22,3 +22,11 @@ network:
   service:
     - enabled
 
+/etc/hosts:
+  file:
+    - managed
+    - source: salt://local-conf/hosts
+    - user: root
+    - group: root
+    - mode: 644
+
