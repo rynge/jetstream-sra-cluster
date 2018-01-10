@@ -59,5 +59,12 @@ else
     echo $(date +"%m%d%y %H:%M:%S") "   Hostname has been set to `hostname`" >> $LOG
 fi
 
-(echo; echo; route -n) >>/tmp/dhcp-env.txt
+
+# make sure we have the correct route to wrangler nas
+if [ "x$reason" = "xBOUND" ]; then
+    if (echo $new_ip_address | egrep '^10\.5') >/dev/null 2>&1; then
+        logger "Fixing static route to Wrangler NFS"
+        route add -net 149.165.238.53 netmask 255.255.255.255 gw 10.5.0.129
+    fi
+fi
 
