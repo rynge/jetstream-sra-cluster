@@ -2,6 +2,7 @@ base:
   '*':
     - salt
     - cloud-init
+    - network
     - dhcp
     - ssh
     - yum
