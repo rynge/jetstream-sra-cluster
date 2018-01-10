@@ -10,6 +10,7 @@ base:
     - htcondor
     - slurm
     - tools
+    - users
     
 #- ganglia
 
