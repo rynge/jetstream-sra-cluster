@@ -1,0 +1,27 @@
+#!/bin/sh
+
+case $reason in
+  BOUND|RENEW|REBIND|REBOOT|TIMEOUT)
+    logger new_ip_address=$new_ip_address
+    logger new_host_name=$new_host_name
+    logger new_domain_name=$new_domain_name
+    logger new_routers=$new_routers
+
+    if (echo "$new_routers" | egrep '^10\.5') >/dev/null 2>&1; then
+        logger "Ignoring default gateway associated with dhcp information for $new_ip_address"
+        unset new_routers
+        unset new_classless_static_routes
+    fi
+    
+    # override the domain name
+    new_domain_name="jetstreamlocal"
+
+    env | sort >/tmp/dhcp-env.txt
+    
+    ;;
+esac
+
+
+
+
+

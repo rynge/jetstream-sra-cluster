@@ -9,6 +9,10 @@
     - managed
     - source: salt://network/ifcfg-eth1
 
+iptables:
+  service:
+    - disabled
+
 # conflicts with our dhcpd setup - disable the service
 NetworkManager:
   service:
