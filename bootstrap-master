@@ -52,8 +52,8 @@ wget -nv https://download.schedmd.com/slurm/slurm-17.11.1.tar.bz2
 rpmbuild -ta slurm*.tar.bz2
 cd /root/rpmbuild/RPMS/x86_64/
 rm -f *openlava* *torque*
+yum -y erase slurm slurm-\* || true
 rpm -Uvh slurm*.rpm
-systemctl restart mariadb
 echo "grant all on slurm.* to slurm@localhost identified by 'srasecret';" | mysql
 
 salt-call state.highstate
