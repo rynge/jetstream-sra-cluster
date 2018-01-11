@@ -1,0 +1,3 @@
+
+ 0 * * * *  root  tmpwatch 120 /srv/web/results/ >/var/log/tmpwatch-results.log 2>&1
+

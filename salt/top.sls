@@ -7,6 +7,7 @@ base:
     - ssh
     - yum
     - autofs
+    - nginx
     - htcondor
     - slurm
     - tools
