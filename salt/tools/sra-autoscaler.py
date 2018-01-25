@@ -9,8 +9,8 @@ import subprocess
 from pprint import pprint
 
 # consts
-MAX_INSTANCES_TOTAL = 10
-MAX_INSTANCES_PER_ITERAION = 5
+MAX_INSTANCES_TOTAL = 2
+MAX_INSTANCES_PER_ITERAION = 1
 
 
 def backticks(cmd):
@@ -85,7 +85,7 @@ for i in range(new_instances_count):
 
     print("Selected %s for a new instance" %(image_selected.name))
     
-    flavor = cloud.get_flavor("m1.small")
+    flavor = cloud.get_flavor("m1.medium")
 
     network = []
     network.append(cloud.get_network("sra-net"))

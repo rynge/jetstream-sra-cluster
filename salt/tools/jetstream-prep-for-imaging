@@ -8,6 +8,13 @@ rm -f /etc/condor/master_shutdown_script.sh
 
 systemctl stop condor
 
+# disable stuff we do not need in the worker
+systemctl disable salt-master
+systemctl disable nginx
+systemctl disable mariadb
+systemctl disable slurmctld
+systemctl disable slurmd
+
 # cleanup
 rm -rf /root/.config/openstack
 rm -f /etc/condor/pool_password

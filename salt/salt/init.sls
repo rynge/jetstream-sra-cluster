@@ -21,6 +21,21 @@ salt-minion:
     - mode: 755
     - makedirs: True
 
+/etc/salt/master.d:
+  file.directory:
+    - user: root
+    - group: root
+    - mode: 755
+    - makedirs: True
+
+/etc/salt/master.d/50-master.conf:
+  file.managed:
+    - user: root
+    - group: root
+    - mode: 644
+    - template: jinja
+    - source: salt://salt/50-master.conf
+
 /etc/salt/minion.d/50-custom.conf:
   file.managed:
     - user: root

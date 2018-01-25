@@ -61,6 +61,6 @@ salt-call state.highstate
 systemctl restart salt-minion
 
 # enable autoscaler
-echo " */5 * * * *  root  /srv/jetstream-sra-cluster/salt/tools/sra-autoscaler.py >/var/log/sra-autoscaler.log 2>&1" >/etc/cron.d/sra-autoscaler
+echo " */10 * * * *  root  /srv/jetstream-sra-cluster/salt/tools/sra-autoscaler.py >/var/log/sra-autoscaler.log 2>&1" >/etc/cron.d/sra-autoscaler
 
 
