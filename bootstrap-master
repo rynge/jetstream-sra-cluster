@@ -22,6 +22,10 @@ cp salt/local-conf/hosts /etc/hosts
 yum install -y salt-master salt-minion
 mkdir -p /etc/salt/minion.d /etc/salt/master.d
 echo "$MY_HOSTNAME" >/etc/salt/minion_id
+cat >/etc/salt/grains <<EOF
+roles:
+  - master
+EOF
 echo "master: $MY_HOSTNAME" >/srv/jetstream-sra-cluster/salt/local-conf/salt-50-master.conf
 cp /srv/jetstream-sra-cluster/salt/salt/*.conf /etc/salt/minion.d/
 cp /srv/jetstream-sra-cluster/salt/local-conf/salt-50-master.conf /etc/salt/minion.d/

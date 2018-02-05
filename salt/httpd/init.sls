@@ -1,18 +1,20 @@
 
-nginx:
+{% if 'master' in salt['grains.get']('roles', []) %}
+
+httpd:
   pkg:
     - installed
   service.running:
     - enable: True
     - watch:
-      - file: /etc/nginx/nginx.conf
+      - file: /etc/httpd/conf/httpd.conf
 
-/etc/nginx/nginx.conf:
+/etc/httpd/conf/httpd.conf:
   file:
     - managed
     - user: root
     - mode: 644
-    - source: salt://nginx/nginx.conf
+    - source: salt://httpd/httpd.conf
 
 /srv/web:
   file.directory:
@@ -31,14 +33,14 @@ nginx:
     - managed
     - user: root
     - mode: 644
-    - source: salt://nginx/index.html
+    - source: salt://httpd/index.html
 
 /srv/web/results/index.html:
   file:
     - managed
     - user: root
     - mode: 644
-    - source: salt://nginx/index.html
+    - source: salt://httpd/index.html
 
 tmpwatch:
   pkg:
@@ -49,6 +51,7 @@ tmpwatch:
     - managed
     - user: root
     - mode: 644
-    - source: salt://nginx/tmpwatch-results.cron
+    - source: salt://httpd/tmpwatch-results.cron
 
+{% endif %}
 

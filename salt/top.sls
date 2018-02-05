@@ -7,14 +7,14 @@ base:
     - ssh
     - yum
     - autofs
-    - nginx
+    - httpd
     - htcondor
     - slurm
     - tools
     - users
-    
-#- ganglia
+    - ganglia
 
+#- nginx
 
 
 
