@@ -10,7 +10,7 @@ systemctl stop condor
 
 # disable stuff we do not need in the worker
 systemctl disable salt-master
-systemctl disable nginx
+systemctl disable httpd
 systemctl disable mariadb
 systemctl disable slurmctld
 systemctl disable slurmd

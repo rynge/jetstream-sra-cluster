@@ -9,7 +9,7 @@ import subprocess
 from pprint import pprint
 
 # consts
-MAX_INSTANCES_TOTAL = 2
+MAX_INSTANCES_TOTAL = 8
 MAX_INSTANCES_PER_ITERAION = 1
 
 
@@ -86,6 +86,7 @@ for i in range(new_instances_count):
     print("Selected %s for a new instance" %(image_selected.name))
     
     flavor = cloud.get_flavor("m1.medium")
+    #flavor = cloud.get_flavor("m1.small")
 
     network = []
     network.append(cloud.get_network("sra-net"))

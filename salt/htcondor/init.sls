@@ -9,6 +9,7 @@ condor:
     - installed
   service.running:
     - enable: True
+    - reload: True
     - watch:
       - file: /etc/condor/config.d/10-jetstream.conf
       - file: /etc/condor/config.d/50-manager.conf
@@ -34,8 +35,23 @@ condor:
     - managed
     - source: salt://htcondor/worker.condor.service
 
+/usr/bin/sra-htcondor-ads:
+  file:
+    - managed
+    - mode: 755
+    - source: salt://htcondor/sra-htcondor-ads
 
-{% if 'worker_node' in salt['grains.get']('roles', []) %}
+{% if 'master' in salt['grains.get']('roles', []) %}
+#######################################################################
+##
+## master configs
+##
+/etc/condor/config.d/10-jetstream.conf:
+  file:
+    - managed
+    - source: salt://htcondor/10-jetstream-master.conf
+
+{% else %}
 #######################################################################
 ##
 ## worker configs
@@ -50,17 +66,6 @@ condor:
     - managed
     - mode: 755
     - source: salt://htcondor/master_shutdown_script.sh
-
-{% else %}
-#######################################################################
-##
-## master configs
-##
-/etc/condor/config.d/10-jetstream.conf:
-  file:
-    - managed
-    - source: salt://htcondor/10-jetstream-master.conf
-
 
 {% endif %}
 

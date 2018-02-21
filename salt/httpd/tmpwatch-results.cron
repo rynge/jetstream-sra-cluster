@@ -1,3 +1,4 @@
 
  0 * * * *  root  tmpwatch 120 /srv/web/results/ >/var/log/tmpwatch-results.log 2>&1
+ 0 * * * *  root  tmpwatch 120 /home/gw/airavata-workdirs/ >/var/log/tmpwatch-airavata.log 2>&1
 

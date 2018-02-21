@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ -e /nas/wrangler/NCBI/SRA/Downloads ]; then
+    echo "SRA_Wrangler_Mounted = True"
+else
+    echo "SRA_Wrangler_Mounted = False"
+fi
+
+

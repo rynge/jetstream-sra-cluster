@@ -1,14 +1,24 @@
 
-
-
-/etc/ganglia/gmond.conf:
-  file.managed:
-    - source: salt://ganglia/gmond.conf
-
 /usr/lib/systemd/system/gmond.service:
   file:
     - managed
     - source: salt://ganglia/gmond.service
+
+gmond:
+  pkg:
+    - installed
+    - name: ganglia-gmond
+  service:
+    - enabled
+
+#  service.running:
+#    - enable: True
+#    - watch:
+#      - file: /etc/ganglia/gmond.conf
+
+/etc/ganglia/gmond.conf:
+  file.managed:
+    - source: salt://ganglia/gmond.conf
 
 
 {% if 'master' in salt['grains.get']('roles', []) %}
