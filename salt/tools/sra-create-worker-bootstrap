@@ -34,6 +34,13 @@ hostname "$WORKER_HOSTNAME"
 echo "$WORKER_HOSTNAME" >/etc/hostname
 cat "$WORKER_HOSTNAME" >/etc/salt/minion_id
 
+# and /etc/hosts
+cat >/etc/hosts <<EEOOFF
+EOF
+cat /etc/hosts >>$SCRIPT
+cat >>$SCRIPT <<EOF
+EEOOFF
+
 cat >/etc/salt/grains <<EEOOFF
 roles:
   - worker_node

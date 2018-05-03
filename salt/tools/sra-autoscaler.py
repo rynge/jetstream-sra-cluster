@@ -9,7 +9,7 @@ import subprocess
 from pprint import pprint
 
 # consts
-MAX_INSTANCES_TOTAL = 8
+MAX_INSTANCES_TOTAL = 19
 MAX_INSTANCES_PER_ITERAION = 1
 
 
@@ -55,12 +55,23 @@ if jobs_idle == None or jobs_idle == "":
 jobs_idle = int(jobs_idle)
 print("%d idle HTCondor jobs" %(jobs_idle))
 
+# how many "old" idle jobs do we have?
+jobs_old_idle = backticks("condor_q -const 'JobStatus == 1 && time() - QDate > 900' -nob -allusers -af ClusterID -af ProcID | wc -l")
+if jobs_old_idle == None or jobs_old_idle == "":
+    print("Unable to query HTCondor")
+    sys.exit(1)
+jobs_old_idle = int(jobs_old_idle)
+print("%d \"old\" idle HTCondor jobs" %(jobs_old_idle))
+
 # do we need more workers?
+# we want to start quickly, but then be more conservative in order to not oversubscribe
 new_instances_count = 0
-if jobs_idle > 0:
+if servers_running < 3 and jobs_idle > 0:
     new_instances_count = int(jobs_idle / 10)
     if new_instances_count < 1:
         new_instances_count = 1
+elif jobs_old_idle > 30:
+    new_instances_count = 1
 
 # bounds
 new_instances_count = min(new_instances_count, MAX_INSTANCES_PER_ITERAION)
