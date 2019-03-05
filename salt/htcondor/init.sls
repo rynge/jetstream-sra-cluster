@@ -15,6 +15,11 @@ condor:
       - file: /etc/condor/config.d/50-manager.conf
       - file: /etc/condor/pool_password
 
+/var/lib/condor-job-history:
+  file.directory:
+    - user: condor
+    - group: condor
+    - mode: 1777
 
 /etc/condor/config.d/50-manager.conf:
   file:

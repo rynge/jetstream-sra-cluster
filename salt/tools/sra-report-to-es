@@ -1,0 +1,89 @@
+#!/usr/bin/python
+
+import base64
+import json
+import os
+import pprint
+import requests
+import socket
+import socket
+import subprocess
+import sys
+import time
+from datetime import datetime
+
+
+def get_lock(process_name):
+    # Without holding a reference to our socket somewhere it gets garbage
+    # collected when the function exits
+    get_lock._lock_socket = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
+
+    try:
+        get_lock._lock_socket.bind('\0' + process_name)
+    except socket.error:
+        print('lock exists')
+        sys.exit()
+
+
+def ts_to_date(ts):
+    ts = int(ts)
+    return datetime.utcfromtimestamp(ts).strftime('%Y-%m-%dT%H:%M:%SZ')
+
+
+def report_usage(job_history_dir, json_dir, fname):
+
+    json_full_path = os.path.join(json_dir, fname)
+
+    # convert the ad to json
+    cmd = 'condor_transform_ads -in:long ' + \
+          os.path.join(job_history_dir, fname) + \
+          ' -rules /dev/null -out:json ' + \
+          json_full_path
+    p = subprocess.Popen(cmd, shell=True)
+    p.communicate()
+    # always exits with 1 - need to read the ad to make sure it is ok
+
+    f = open(json_full_path, 'r')
+    raw = f.read()
+    f.close()
+
+    data = json.loads(raw)[0]
+
+    if len(data) < 20:
+        raise RuntimeError('Ad looks too short - aborting')
+    
+    # add attributes
+    data['id'] = data['GlobalJobId']
+    data['ts'] = ts_to_date(data['JobFinishedHookDone'])
+    data['RemoteTotalCpu'] = data['RemoteUserCpu'] + data['RemoteSysCpu']
+    if 'RequestCpus' not in data:
+        data['RequestCpus'] = 1
+    data['RemoteTotalWallClockTime'] = data['RemoteWallClockTime'] * data['RequestCpus']
+
+    #pprint.pprint(data)
+    
+    data = { 'data': base64.b64encode(json.dumps(data)) }
+
+    url = 'https://unicorn.isi.edu/sra/report-usage.php'
+    
+    r = requests.post(url, data=data)
+    if 'OK' not in r.content:
+        raise RuntimeError('Did not get an OK from the remote end: ' + r.content)
+
+
+get_lock('running')
+  
+# look for files in the HTCondor job history dir
+job_history_dir = '/var/lib/condor-job-history'
+processed_dir = '/var/lib/condor-job-history-processsed'
+json_dir = '/var/lib/condor-job-history-json'
+for fname in os.listdir(job_history_dir):
+    try:
+        report_usage(job_history_dir, json_dir, fname)
+        os.rename(os.path.join(job_history_dir, fname), os.path.join(processed_dir, fname))
+        print('Completed: ' + fname)
+    except Exception as e:
+        print(e)
+        print('Failed: ' + fname)
+  
+

@@ -1,0 +1,3 @@
+
+*/5 * * * *  root  /srv/jetstream-sra-cluster/salt/tools/sra-report-to-es >/dev/null 2>&1
+

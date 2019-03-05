@@ -47,4 +47,7 @@ pkgconfig:
 docker-ce:
     pkg.removed
     
+java-11-openjdk-devel:
+    pkg.installed
+
 

@@ -6,11 +6,14 @@ import shade
 import datetime
 import subprocess
 
+from datetime import datetime, timedelta
+from dateutil import parser, tz
 from pprint import pprint
 
+
 # consts
-MAX_INSTANCES_TOTAL = 19
-MAX_INSTANCES_PER_ITERAION = 1
+MAX_INSTANCES_TOTAL = 21
+MAX_INSTANCES_PER_ITERAION = 3
 
 
 def backticks(cmd):
@@ -34,16 +37,35 @@ for server in cloud.list_servers():
     
     if not re.match("^sra-worker", server.name):
         continue
+
+    last_update = parser.parse(server.updated, ignoretz=True)
+    now = datetime.utcnow()
     
-    print(" ... %s (%s)" %(server.name, server.status))
-    
-    if server.status == "ACTIVE":
-        servers_running += 1
+    print(" ... %s (%s, last update %s)" %(server.name, server.status, str(last_update)))
 
     if server.status == "SHUTOFF" or server.status == "ERROR":
         # remove the server
         print("     ... deleting server")
         cloud.delete_server(server)
+        continue
+    
+    # sometimes the instances get stuck in BUILD state
+    if server.status == "BUILD" and last_update < now - timedelta(days=1):
+        # remove the server
+        print("     ... deleting server")
+        cloud.delete_server(server)
+        continue
+    
+    # just stuck
+    if last_update < now - timedelta(days=2):
+        # remove the server
+        print("     ... seems stuck, deleting server")
+        cloud.delete_server(server)
+        continue
+    
+    if server.status == "ACTIVE" or server.status == "BUILD":
+        servers_running += 1
+        continue
 
 print("%d servers running" %(servers_running))
 
@@ -71,11 +93,11 @@ if servers_running < 3 and jobs_idle > 0:
     if new_instances_count < 1:
         new_instances_count = 1
 elif jobs_old_idle > 30:
-    new_instances_count = 1
+    new_instances_count = 3
 
 # bounds
 new_instances_count = min(new_instances_count, MAX_INSTANCES_PER_ITERAION)
-if MAX_INSTANCES_TOTAL - new_instances_count < 1:
+if MAX_INSTANCES_TOTAL - servers_running < new_instances_count:
     new_instances_count = MAX_INSTANCES_TOTAL - servers_running
 if servers_running >= MAX_INSTANCES_TOTAL:
     new_instances_count = 0
@@ -96,8 +118,7 @@ for i in range(new_instances_count):
 
     print("Selected %s for a new instance" %(image_selected.name))
     
-    flavor = cloud.get_flavor("m1.medium")
-    #flavor = cloud.get_flavor("m1.small")
+    flavor = cloud.get_flavor("m1.large")
 
     network = []
     network.append(cloud.get_network("sra-net"))
@@ -106,7 +127,7 @@ for i in range(new_instances_count):
     # sleep to make sure this is a unique ts
     time.sleep(2)
 
-    dt = datetime.datetime.now()
+    dt = datetime.now()
     name = "sra-worker-%s" %(dt.strftime("%Y%m%d%H%M%S"))
 
     # create the user data script
@@ -129,4 +150,5 @@ for i in range(new_instances_count):
                         auto_ip=False, \
                         userdata=user_data)
 
+print('All done')
 

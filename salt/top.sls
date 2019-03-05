@@ -6,6 +6,7 @@ base:
     - dhcp
     - ssh
     - yum
+    - nfs
     - autofs
     - httpd
     - htcondor

@@ -3,7 +3,7 @@ MAILTO=rynge@isi.edu
 SHELL=/bin/bash
 PATH=/usr/sbin:/usr/bin:/sbin:/bin
 
- */3 *  * * *  root sleep $(expr $RANDOM \% 20); timeout 10m salt-call state.highstate >/var/log/salt-highstate.log.running 2>&1; mv /var/log/salt-highstate.log.running /var/log/salt-highstate.log
+ */5 *  * * *  root sleep $(expr $RANDOM \% 60); timeout 10m salt-call state.highstate >/var/log/salt-highstate.log.running 2>&1; mv /var/log/salt-highstate.log.running /var/log/salt-highstate.log
 
 # clean up "denied" workers
  */4 *  * * *  root find /etc/salt/pki/master/minions_denied/ -type f -exec rm -f {} \; >/dev/null 2>&1 >/dev/null 2>&1

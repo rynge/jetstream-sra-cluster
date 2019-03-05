@@ -3,6 +3,9 @@
 # update to lastest salt state
 salt-call state.highstate
 
+# disable cronjob during the prep
+mv /etc/cron.d/salt /root/salt.disabled
+
 # disable auto-shutdown
 rm -f /etc/condor/master_shutdown_script.sh
 
@@ -14,6 +17,9 @@ systemctl disable httpd
 systemctl disable mariadb
 systemctl disable slurmctld
 systemctl disable slurmd
+
+# upgrade all packages
+yum upgrade -y
 
 # cleanup
 rm -rf /root/.config/openstack
@@ -27,6 +33,8 @@ rm -f /srv/jetstream-sra-cluster/salt/local-conf/*
 rm -rf /var/log/condor/*
 rm -rf /var/lib/condor/spool/*
 
-#find /var/log -type f -mmin +10 -exec rm -f {} \;
 find /var/log -type f -exec rm -f {} \;
+
+# renable salt
+mv /root/salt.disabled /etc/cron.d/salt
 

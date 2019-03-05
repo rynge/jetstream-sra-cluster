@@ -13,7 +13,7 @@ rynge:
   group.present: []
   user.present:
     - shell: /bin/bash
-    - home: /home/rynge
+    - home: /nas/home/rynge
     - groups:
       - rynge
       - users
@@ -23,7 +23,7 @@ linsal:
   group.present: []
   user.present:
     - shell: /bin/bash
-    - home: /home/linsal
+    - home: /nas/home/linsal
     - groups:
       - linsal
       - users
