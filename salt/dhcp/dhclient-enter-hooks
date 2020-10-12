@@ -11,6 +11,7 @@ case $reason in
         logger "Ignoring default gateway associated with dhcp information for $new_ip_address"
         unset new_routers
         unset new_classless_static_routes
+        unset new_domain_name_servers
     fi
     
     # override the domain name

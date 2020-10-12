@@ -24,21 +24,17 @@ httpd:
 
 /srv/web/results:
   file.directory:
-    - user: root
-    - group: root
     - mode: 1777
 
 /srv/web/index.html:
   file:
     - managed
-    - user: root
     - mode: 644
     - source: salt://httpd/index.html
 
 /srv/web/results/index.html:
   file:
     - managed
-    - user: root
     - mode: 644
     - source: salt://httpd/index.html
 

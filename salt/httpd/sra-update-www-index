@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -e
+
+INDEX_FILE=/srv/web/data/index.yaml
+
+cd /srv/web/data
+
+rm -f $INDEX_FILE.tmp
+for SRA_FILE in `find sra/ -type f -size +10 | sort`; do
+
+    if ! (echo $SRA_FILE | grep '.sra$') >/dev/null 2>&1; then
+        echo "Skipping $SRA_FILE"
+        continue
+    fi
+
+    SRA_ID=`basename $SRA_FILE .sra`
+    SIZE=`du -s /srv/web/data/sra/$SRA_ID.sra | awk '{print $1;}'`
+
+    echo "$SRA_ID:" >>$INDEX_FILE.tmp
+    echo "  url: \"http://149.165.169.158/data/$SRA_FILE\"" >>$INDEX_FILE.tmp
+    echo "  size: $SIZE" >>$INDEX_FILE.tmp
+done
+
+mv $INDEX_FILE.tmp $INDEX_FILE
+

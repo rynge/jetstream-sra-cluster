@@ -5,11 +5,11 @@ import re
 import shade
 import datetime
 import subprocess
+import sys
 
 from datetime import datetime, timedelta
 from dateutil import parser, tz
 from pprint import pprint
-
 
 # consts
 MAX_INSTANCES_TOTAL = 21
@@ -38,10 +38,12 @@ for server in cloud.list_servers():
     if not re.match("^sra-worker", server.name):
         continue
 
+    created_at = parser.parse(server.created_at, ignoretz=True)
     last_update = parser.parse(server.updated, ignoretz=True)
     now = datetime.utcnow()
     
-    print(" ... %s (%s, last update %s)" %(server.name, server.status, str(last_update)))
+    #pprint(server)
+    print(" ... %s (%s, created %s)" %(server.name, server.status, str(created_at)))
 
     if server.status == "SHUTOFF" or server.status == "ERROR":
         # remove the server
@@ -50,7 +52,7 @@ for server in cloud.list_servers():
         continue
     
     # sometimes the instances get stuck in BUILD state
-    if server.status == "BUILD" and last_update < now - timedelta(days=1):
+    if server.status == "BUILD" and created_at < now - timedelta(hours=2):
         # remove the server
         print("     ... deleting server")
         cloud.delete_server(server)

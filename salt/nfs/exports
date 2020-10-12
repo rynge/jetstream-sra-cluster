@@ -1,3 +1,4 @@
 
-/srv/home    192.168.0.0/16(rw,sync,subtree_check)
+/srv/home            192.168.0.0/16(rw,sync,subtree_check)
+/exports/sra-data    192.168.0.0/16(rw,sync,subtree_check)
 
