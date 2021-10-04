@@ -1,5 +1,5 @@
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
-192.168.0.27 sra-master.jetstreamlocal sra-master
-128.9.36.58  unicorn.isi.edu
+192.168.0.3 sra-master.jetstreamlocal sra-master
+128.9.36.58 unicorn.isi.edu
 

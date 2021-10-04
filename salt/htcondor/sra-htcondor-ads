@@ -6,4 +6,10 @@ else
     echo "SRA_Wrangler_Mounted = False"
 fi
 
+if [ -e /nas/sra-data/fasta ]; then
+    echo "SRA_Data_Mounted = True"
+else
+    echo "SRA_Data_Mounted = False"
+fi
+
 
